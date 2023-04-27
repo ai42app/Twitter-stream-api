@@ -1,5 +1,6 @@
 require('dotenv').config()
 const wordPerSocketDB = require('./DB_logic/wordPerSocketDB')
+const sockets = require('./sockets')
 
 // Open a live stream of roughly 1% random sample of publicly available Tweets
 // https://developer.twitter.com/en/docs/twitter-api/tweets/volume-streams/quick-start
@@ -47,6 +48,7 @@ function streamConnect(retryAttempt) {
 
         for(let i = 0; i < sockets.length; i++){
           console.log("TODO should emit websocket to socket", sockets[i])
+          // socket.emitTo(sockets[i], "New-Tweet", {id, text, author_id})
         }
       }
 
