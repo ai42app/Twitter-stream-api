@@ -1,8 +1,8 @@
 const wordPerSocketDB = require('./DB_logic/wordPerSocketDB')
 
 
-wordPerSocketDB.addSocketByKeyWord("CAT", 0)
+wordPerSocketDB.addSocketByKeyWord("Happy", 0)
 
-console.log(wordPerSocketDB.getSocketsBykeyWordID("CAT"))
+console.log(wordPerSocketDB.getSocketsBykeyWordID("DOG"))
 
 console.log(wordPerSocketDB.getAllKeyWords())

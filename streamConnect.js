@@ -1,7 +1,5 @@
 require('dotenv').config()
-const JSONdb = require('simple-json-db')
-const config = require('./config');
-
+const wordPerSocketDB = require('./DB_logic/wordPerSocketDB')
 
 // Open a live stream of roughly 1% random sample of publicly available Tweets
 // https://developer.twitter.com/en/docs/twitter-api/tweets/volume-streams/quick-start
@@ -19,6 +17,7 @@ const streamURL = 'https://api.twitter.com/2/tweets/sample/stream';
 // stream
 function streamConnect(retryAttempt) {
   console.log(`Run, white list`)
+  const keyWords = wordPerSocketDB.getAllKeyWords()
 
   const stream = needle.get(streamURL + `?${extraFields}`, {
     headers: {
@@ -37,9 +36,10 @@ function streamConnect(retryAttempt) {
       const id = json.data.id
       const author_id = json.data.author_id
       // console.log("Tweet text :", text);
+      // console.log("keyWorlds", keyWords)
 
       // CHECK If tweet contain main keyword
-      const isMatch = config.mainKeyWord.some(keyW => String(text).toLowerCase().includes(keyW))
+      const isMatch = keyWords.some(keyW => String(text).toLowerCase().includes(keyW))
       if(isMatch){
         console.log("Found", "tweet :", text, "id :", id)
       }
