@@ -1,87 +1,28 @@
 require('dotenv').config()
-const JSONdb = require('simple-json-db')
-const config = require('./config');
+const express = require('express')
+const app = express()
+const router = require('./router')
+const server = require('http').createServer(app)
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const sockets = require('./sockets')
+// connect sockets
+sockets.connect(server)
+// allow view files from uplouds folder
+app.use(express.static('public'));
+// disable cors
+app.use(cors())
+// body parser
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 
-// Open a live stream of roughly 1% random sample of publicly available Tweets
-// https://developer.twitter.com/en/docs/twitter-api/tweets/volume-streams/quick-start
+const port = process.env.PORT || 9009
 
-const needle = require('needle');
+app.use('/', router)
 
-// The code below sets the bearer token from your environment variables
-// To set environment variables on macOS or Linux, run the export command below from the terminal:
-// export BEARER_TOKEN='YOUR-TOKEN'
-const token = process.env.BARRER_TOKEN
+sockets.on()
 
-const extraFields = 'expansions=author_id'
-const streamURL = 'https://api.twitter.com/2/tweets/sample/stream';
-
-// stream
-function streamConnect(retryAttempt) {
-  console.log(`Run, white list ${config.useWhiteList}`)
-
-  const stream = needle.get(streamURL + `?${extraFields}`, {
-    headers: {
-      "User-Agent": "v2SampleStreamJS",
-      "Authorization": `Bearer ${token}`
-    },
-    timeout: 20000
-  });
-
-  stream.on('data', data => {
-    try {
-      // MAIN logic here
-      // parse tweet and spam if math
-      const json = JSON.parse(data);
-      const text = json.data.text
-      const id = json.data.id
-      const author_id = json.data.author_id
-      // console.log("Tweet text :", text);
-
-      // dont update if white list enabled and user not in WL
-      if(config.useWhiteList && !config.whiteList.includes(author_id))
-        return
-
-      // CHECK If tweet contain main keyword
-      const isMatch = config.mainKeyWord.some(keyW => String(text).toLowerCase().includes(keyW))
-      if(isMatch){
-        console.log("Found", "tweet :", text, "id :", id)
-      }
-
-      // A successful connection resets retry count.
-      retryAttempt = 0;
-    } catch (e) {
-      // Catches error in case of 401 unauthorized error status.
-      if (data.status === 401) {
-        console.log(data);
-        process.exit(1);
-      } else if (data.detail === "This stream is currently at the maximum allowed connection limit.") {
-        console.log(data.detail)
-        process.exit(1)
-      } else {
-        // Keep alive signal received. Do nothing.
-      }
-    }
-  }).on('err', error => {
-    if (error.code !== 'ECONNRESET') {
-      console.log(error.code);
-      process.exit(1);
-    } else {
-      // This reconnection logic will attempt to reconnect when a disconnection is detected.
-      // To avoid rate limits, this logic implements exponential backoff, so the wait time
-      // will increase if the client cannot reconnect to the stream.
-      setTimeout(() => {
-        console.warn("A connection error occurred. Reconnecting...")
-        streamConnect(++retryAttempt);
-      }, 2 ** retryAttempt);
-    }
-  });
-  return stream;
-}
-
-
-
-// RUN app
-(async () => {
-  streamConnect(0)
-})();
+server.listen(port, () => {
+  console.log('Listening on port ' + port + " Version 17/01/23")
+})
