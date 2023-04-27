@@ -13,11 +13,16 @@ const token = process.env.BARRER_TOKEN
 
 const extraFields = 'expansions=author_id'
 const streamURL = 'https://api.twitter.com/2/tweets/sample/stream';
+let keyWords = wordPerSocketDB.getAllKeyWords()
 
 // stream
 function streamConnect(retryAttempt) {
   console.log(`Run, white list`)
-  const keyWords = wordPerSocketDB.getAllKeyWords()
+
+  setInterval(() => {
+    keyWords = wordPerSocketDB.getAllKeyWords()
+    console.log(`Updated`, keyWords)
+  }, 1000)
 
   const stream = needle.get(streamURL + `?${extraFields}`, {
     headers: {

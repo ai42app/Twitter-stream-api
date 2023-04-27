@@ -41,7 +41,8 @@ exports.getSocketsBykeyWordID = (keyWordID) => {
 
 exports.getAllKeyWords = () => {
     try{
-      return Object.keys(db.storage)
+      db.sync()
+      return Object.keys(db.JSON())
     }catch(e){
       return []
     }
