@@ -18,7 +18,7 @@ const streamURL = 'https://api.twitter.com/2/tweets/sample/stream';
 
 // stream
 function streamConnect(retryAttempt) {
-  console.log(`Run, white list ${config.useWhiteList}`)
+  console.log(`Run, white list`)
 
   const stream = needle.get(streamURL + `?${extraFields}`, {
     headers: {
@@ -37,10 +37,6 @@ function streamConnect(retryAttempt) {
       const id = json.data.id
       const author_id = json.data.author_id
       // console.log("Tweet text :", text);
-
-      // dont update if white list enabled and user not in WL
-      if(config.useWhiteList && !config.whiteList.includes(author_id))
-        return
 
       // CHECK If tweet contain main keyword
       const isMatch = config.mainKeyWord.some(keyW => String(text).toLowerCase().includes(keyW))

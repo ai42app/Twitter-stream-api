@@ -1,7 +1,7 @@
 // DB used
 // https://www.npmjs.com/package/simple-json-db
 const JSONdb = require('simple-json-db')
-const db = new JSONdb('DB_storage/wordPerSocketDBStorage')
+const db = new JSONdb('DB_storage/wordPerSocketDBStorage.json')
 
 exports.iskeyWordIDRegistred = (keyWordID) => {
   return db.has(String(keyWordID).toLowerCase())
@@ -31,9 +31,18 @@ exports.addSocketByKeyWord = (keyWordID, socket) => {
   db.set(String(keyWordID).toLowerCase(), sockets)
 }
 
-exports.getUserImagesBykeyWordID = (keyWordID) => {
+exports.getSocketsBykeyWordID = (keyWordID) => {
   if(!db.has(String(keyWordID).toLowerCase()))
     return []
 
   return db.get(String(keyWordID).toLowerCase())
+}
+
+
+exports.getAllKeyWords = () => {
+    try{
+      return Object.keys(db.storage)
+    }catch(e){
+      return []
+    }
 }
