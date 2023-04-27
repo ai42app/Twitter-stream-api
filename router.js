@@ -27,6 +27,8 @@ router.route('/register-socket-by-keyword').post(async function(req, res) {
    const keyWord = req.body.keyWord
    const socket = req.body.socket
 
+   console.log(keyWord, socket)
+
    if(!keyWord || !socket)
      return res.status(400).send("Bad request")
 

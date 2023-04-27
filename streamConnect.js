@@ -40,15 +40,16 @@ function streamConnect(retryAttempt) {
       // console.log("keyWorlds", keyWords)
 
       // CHECK If tweet contain main keyword
-      const isMatch = keyWords.some(keyW => String(text).toLowerCase().includes(keyW))
-      if(isMatch){
-        console.log("Found", "tweet :", text, "id :", id)
-
-        const sockets = wordPerSocketDB.getSocketsBykeyWordID(text)
+      // const isMatch = keyWords.some(keyW => String(text).toLowerCase().includes(keyW))
+      const matchText = keyWords.find(word => String(text).toLowerCase().includes(word))
+      if(matchText){
+        // console.log("Found", "tweet :", text, "id :", id)
+        const sockets = wordPerSocketDB.getSocketsBykeyWordID(matchText)
+        console.log("sockets", sockets, text)
 
         for(let i = 0; i < sockets.length; i++){
-          console.log("TODO should emit websocket to socket", sockets[i])
-          // socket.emitTo(sockets[i], "New-Tweet", {id, text, author_id})
+          socket.emitTo(sockets[i], "new-tweet", {id, text, author_id})
+          console.log("emit websocket to socket", sockets[i])
         }
       }
 
