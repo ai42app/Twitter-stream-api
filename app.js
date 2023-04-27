@@ -6,6 +6,8 @@ const server = require('http').createServer(app)
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const sockets = require('./sockets')
+const streamConnect = require('./streamConnect')
+
 // connect sockets
 sockets.connect(server)
 // allow view files from uplouds folder
@@ -26,3 +28,6 @@ sockets.on()
 server.listen(port, () => {
   console.log('Listening on port ' + port + " Version 17/01/23")
 })
+
+// run twitter stream
+streamConnect(0)
