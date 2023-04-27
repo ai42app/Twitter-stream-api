@@ -42,6 +42,12 @@ function streamConnect(retryAttempt) {
       const isMatch = keyWords.some(keyW => String(text).toLowerCase().includes(keyW))
       if(isMatch){
         console.log("Found", "tweet :", text, "id :", id)
+
+        const sockets = wordPerSocketDB.getSocketsBykeyWordID(text)
+
+        for(let i = 0; i < sockets.length; i++){
+          console.log("TODO should emit websocket to socket", sockets[i])
+        }
       }
 
       // A successful connection resets retry count.
