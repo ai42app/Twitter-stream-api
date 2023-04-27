@@ -40,7 +40,6 @@ function streamConnect(retryAttempt) {
       // console.log("keyWorlds", keyWords)
 
       // CHECK If tweet contain main keyword
-      // const isMatch = keyWords.some(keyW => String(text).toLowerCase().includes(keyW))
       const matchText = keyWords.find(word => String(text).toLowerCase().includes(word))
       if(matchText){
         // console.log("Found", "tweet :", text, "id :", id)
