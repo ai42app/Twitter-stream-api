@@ -43,12 +43,12 @@ function streamConnect(retryAttempt) {
       const matchText = keyWords.find(word => String(text).toLowerCase().includes(word))
       if(matchText){
         // console.log("Found", "tweet :", text, "id :", id)
-        const sockets = wordPerSocketDB.getSocketsBykeyWordID(matchText)
-        console.log("sockets", sockets, text)
+        const socketsIDs = wordPerSocketDB.getSocketsBykeyWordID(matchText)
+        // console.log("sockets", sockets, sockets.length)
 
-        for(let i = 0; i < sockets.length; i++){
-          socket.emitTo(sockets[i], "new-tweet", {id, text, author_id})
-          console.log("emit websocket to socket", sockets[i])
+        for(let i = 0; i < socketsIDs.length; i++){
+          console.log("emit websocket to socket", socketsIDs[i])
+          sockets.emitTo(socketsIDs[i], "new-tweet", {id, text, author_id})
         }
       }
 
